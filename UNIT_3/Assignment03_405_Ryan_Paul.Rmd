@@ -1,0 +1,134 @@
+---
+title: "Assignment03_405_Ryan_Paul.Rmd"
+author: "Ryan Paul"
+date: "9/13/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1.
+```{r question1}
+# not sure why we are creating a new directory, since cloning will create a directory, 
+# but here's to show I know how to do it
+
+# mkdir awesome-public-datasets
+# cd awesome-public-datasets
+
+# I use the ssh method so I don't have to put in my username and pass everytime
+# git clone git@github.com:awesomedata/awesome-public-datasets.git
+```
+
+# 2.
+## a.
+```{r question2a}
+# cd Datasets
+# cp titanic.csv.zip ../../
+# cd ../../
+# unzip titanic.csv.zip
+
+df = read.csv("titanic.csv")
+```
+
+## b.
+```{r question2b}
+summary(df$Sex)
+plot(df$Sex, main = "Titanic Passengers Counted By Sex", xlab = "Sex", ylab = "Frequency")
+```
+
+## c.
+```{r question2c}
+sapply(df[c("Age","Fare","Survived")], mean, na.rm=TRUE)
+```
+
+# 3.
+## a, b, c, and d
+```{r question3abcd}
+sleepDataSet <- read.csv("sleep_data_01.csv")
+
+sleepDataSummary <- function(sleepData) {
+  #a
+  medianAge <- median(sleepData$Age, na.rm = TRUE)
+  minimumDurationOfSleep <- min(sleepData$Duration, na.rm = TRUE)
+  maximumDurationOfSleep <- max(sleepData$Duration, na.rm = TRUE)
+  meanRSES <- mean(sleepData$RSES, na.rm = TRUE)
+  sdRSES <- sd(sleepData$RSES, na.rm = TRUE)
+  
+  #b
+  report <- data.frame(medianAge, meanRSES / 5, sdRSES / 5, maximumDurationOfSleep - minimumDurationOfSleep)
+  
+  #c
+  names(report) <- c("MedianAge", "SelfEsteem", "SE_SD", "DurationRange")
+  
+  #d
+  sapply(report, round, digits = 2)
+}
+```
+## e.
+```{r question3e}
+sleepDataSummary(sleepDataSet)
+```
+
+# 4.
+## a.
+```{r question4a}
+
+# I was sick of this downloading everytime I knitted
+if("fivethirtyeight" %in% rownames(installed.packages()) == FALSE) {
+  install.packages("fivethirtyeight", repos = "http://cran.us.r-project.org")
+}
+
+library("fivethirtyeight")
+```
+
+## b. THIS WAS SO HARD!!!
+```{r question4b}
+datasetName <- data(package = "fivethirtyeight")$result[,"Item"][[22]]
+df <- get(datasetName)
+```
+
+## c.
+```{r question4c}
+#http://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/
+```
+
+## d.
+```{r question4d}
+dim(df)
+colnames(df)
+```
+
+# 5.
+## a.
+```{r question5a}
+colnames(df)
+length(colnames(df))
+```
+
+## b.
+```{r, question5b}
+#shoutout to stackoverflow
+library(dplyr)
+major_count <- df %>% 
+                    na.omit() %>%
+                    group_by(major_category) %>%
+                    summarise(total = n())
+major_count
+```
+
+## c.
+```{r question5c}
+par(las=2)
+barplot(major_count$total, names.arg=major_count$major_category, main="Recent Graduates by Major Category", xlab = "Count", ylab = "Major Category", horiz = TRUE, col = "green")
+```
+
+## d.
+``` {r question5d}
+#why have write.csv with robust documentation of the settings, if they aren't meant to be changed?
+write.table(df, file = "college_recent_grads.csv", sep=",", col.names = FALSE, row.names = FALSE)
+```
+
+# 6
+[https://github.com/ryanquincypaul/MSDS6306](https://github.com/ryanquincypaul/MSDS6306)

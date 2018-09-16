@@ -1,0 +1,63 @@
+---
+title: "Assignment02_405_Ryan_Paul"
+author: "Ryan Paul"
+date: "9/6/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. Put the following questions into RMarkdown as headers (or subheaders if you’re making question numbers headings). Be sure to answer the questions underneath each header. 
+
+### a.	What is a basic workflow for reproducible research?  
+You gather the data, analyze it, and present the results. The key is to do these things from the get go in a clear and documented way that can be presented clearly via a document, a presentation, or a website, and can be modified easily later.
+
+### b.	What are five practical tips for making research reproducible?
+Lifted from Reproducible Research reading this week.
+
+1. Document everything!
+2. Everything is a (text) file.
+3. All files should be human readable.
+4. Explicitly tie your files together.
+5. Have a plan to organize, store, and make your files available.
+
+### c.	Give an example of how you might implement each tip. 
+1. All code that is run to gather or analyze data can be run from an `.Rmd` file so that a document or presentation can be built from the beginning. You can also gather the session info via `sessionInfo()` so that others can replicate your session.
+2. Don't use Microsoft Office or LibreOffice for documentation as they cannot be opened universally.
+3. Follow a style guide when you code/document so that you are writing your code in a standardized way that was developed to improve readability. Also write smart comments when you must use confusing code.
+4. Use Tie commands to make the figures, data, and diagrams placed in your document explicitly sourced.
+5. Use multiple files for data gathering, analysis, and documentation tasks to prevent the creation of a behemoth file that is confusing to wade through. Think the [Single Responsibility Principle](https://en.wikipedia.org/wiki/Single_responsibility_principle) but for files.
+
+### d.	Which one of these do you think will be the most difficult?
+Personally, documenting everything since as a developer I am used to coding first and asking questions later. However, there is a push in the development world to document earlier in the process.
+
+# 2. Download and complete “air_hist.R” code from the Files Tab on 2DS.  You will build scatter plots using the plot function.
+
+### a.	As described in the “TODO Assignment 2: Question 2a” comment, complete the plot function regarding monthly temperature.
+### b.	As described in the “TODO Assignment 2: Question 2b” comment, complete the plot function involving ozone.
+### c.	Translate these to RMarkdown and put them in your overall homework RMarkdown file.
+
+```{r Question2A}
+plot(x = airquality$Month, y = airquality$Temp, xlab = "Month", ylab = "Temperature", main = "Temperature by Month")
+```
+
+```{r Question2B}
+plot(x = airquality$Temp, y = airquality$Ozone, xlab = "Temperature", ylab = "Ozone", main = "Temperature vs Ozone")
+```
+
+# 3. Download and complete “knit_cars.Rmd” in the Files tab on 2DS
+### a.	As described in the “TODO Assignment 2: Question 3a” comment, complete a plot function for Temperature and Pressure
+### b.	As described in the “TODO Assignment 2: Question 3b” comment, complete a similar plot function that reverses the two axes.
+### c.	This is written in RMarkdown, so just transfer it to your RMarkdown script. 
+
+(NOTE: The todo's were confusing as they both say to use pressure for x and temperature for y. I went with Temp vs Pressure for A and flipped it for B)
+
+```{r pressure_plot, echo=FALSE}
+plot(x = pressure$temperature, y = pressure$pressure, xlab = "Temperature", ylab = "Pressure", main = "Temperature vs Pressure")
+```
+
+```{r pressure_plot2, echo=FALSE}
+plot(x = pressure$pressure, y = pressure$temperature, xlab= "Pressure", ylab = "Temperature", main = "Pressure vs Temperature")
+```
