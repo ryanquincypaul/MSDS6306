@@ -1,0 +1,90 @@
+---
+title: "Lecture 4 Assignment"
+author: "Ryan Quincy Paul"
+date: "9/19/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1
+```{r ronRonRonWeasley}
+library('rvest')
+library('tidyr')
+#read in the page
+url <- 'https://www.imdb.com/title/tt1201607/fullcredits?ref_=tt_ql_1'
+website <- read_html(url)
+
+#get the table
+castListTableNode <- html_node(website, "table.cast_list")
+castListTable <- html_table(castListTableNode, header = FALSE)
+
+#drop the first row (it's blank)
+castListTable <- castListTable[-c(1), ]
+
+#drop rows that say "Rest of cast listed alphabetically:"
+castListTable <- castListTable<-castListTable[!(castListTable$X1=="Rest of cast listed alphabetically:"),]
+
+#drop 1st and 3rd columns and rename the remaining onces
+castListTable$X1 <- NULL
+castListTable$X3 <- NULL
+names(castListTable) <- c("Actor", "Character")
+
+# remove /n's thanks https://stackoverflow.com/a/29271624
+castListTable <- data.frame(lapply(castListTable, function(x) {
+  gsub("\n", "", x)
+}))
+
+#remove excessive spaces as well https://stackoverflow.com/a/206720
+castListTable <- data.frame(lapply(castListTable, function(x) {
+  gsub("[ ]{2,}", " ", x)
+}))
+
+#using tidyr::separate to split the first column, found regex https://stackoverflow.com/a/28666833
+castListTable <- castListTable %>%
+  separate(Actor, c("FirstName", "Surname"), "[ ](?=[^ ]+$)", extra="merge")
+
+head(castListTable, 10)
+```
+
+
+# 2
+```{r manusRetiredBaldSpot, fig.align='center'}
+#read in the page
+url <- 'http://www.espn.com/nba/team/stats/_/name/sa/san-antonio-spurs'
+website <- read_html(url)
+
+#get the tables
+espnTables <- html_nodes(website, "table")
+
+#get the 2nd table (it's not classed or id'd)
+shootingStatsTableNode <- espnTables[2]
+shootingStatsTable <- as.data.frame(html_table(shootingStatsTableNode, header = FALSE))
+
+#drop first row
+shootingStatsTable <- shootingStatsTable[-1,]
+names(shootingStatsTable) <- shootingStatsTable[1,]
+
+#drop the first row again now that we have stored the names and remove the last totals row
+shootingStatsTable <- shootingStatsTable[-1,]
+shootingStatsTable <- shootingStatsTable[-length(shootingStatsTable), ]
+
+#using tidyr::separate to split the first column, found regex https://stackoverflow.com/a/28666833
+shootingStatsTable <- shootingStatsTable %>%
+  separate(PLAYER, c("Name", "Position"), ", ", extra="merge")
+
+# convert stats columns to numeric
+shootingStatsTable[, -c(1:2)] <- sapply(shootingStatsTable[, -c(1:2)], as.numeric)
+
+library(ggplot2)
+shootingPlot<-ggplot(data=shootingStatsTable, aes_string("Name", "`FG%`", fill = "Position"))
+# Horizontal bar plot
+shootingPlot +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  ylab("Field Goal Percentage") +
+  xlab("Player") +
+  ggtitle("San Antonio Shooting Percentage per Game 2017-18")
+```

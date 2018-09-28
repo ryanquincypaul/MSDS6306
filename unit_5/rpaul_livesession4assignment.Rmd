@@ -1,0 +1,98 @@
+---
+title: "Lecture 5 Assignment"
+author: "Ryan Paul"
+date: "9/27/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1
+
+## a.
+
+```{r dataMungingA}
+#data is separated by semicolon and there is no header
+df <- read.table("yob2016.txt", header=FALSE, sep = ";")
+names(df) <- c("Name", "Sex", "Count")
+```
+
+## b.
+
+```{r dataMungingB}
+summary(df)
+str(df)
+```
+
+## c.
+
+```{r dataMungingC}
+#Get the lines ending in yyy
+badNameEndingInYYYRowIndex <- grep("*yyy", df$Name, ignore.case = TRUE)
+#levels and droplevels is used to get rid of the 2nd line of output that I guess is due to read.table reading in strings not as string but factors. https://stackoverflow.com/a/4284931
+# relevant follow up about stringsAsFactors parameter which is relevant to our current unit in Stats https://simplystatistics.org/2015/07/24/stringsasfactors-an-unauthorized-biography/
+levels(droplevels(df[badNameEndingInYYYRowIndex,"Name"]))
+```
+
+## d.
+
+```{r dataMungingD}
+y2016 <- df[-c(badNameEndingInYYYRowIndex),]
+```
+
+# 2
+
+## a.
+
+```{r dataMergingA}
+#It's a csv so just use the csv method
+y2015 <- read.csv("yob2015.txt", header=FALSE)
+names(y2015) <- c("Name", "Sex", "Count")
+```
+
+## b.
+
+According the last 10 rows, the least used names were used 5 times. Only names used 5 times or more are accounted for in the file.
+```{r dataMergingB}
+tail(y2015, 10)
+```
+
+## c.
+
+```{r dataMergingC}
+final <- merge(y2015,y2016, by=c("Name", "Sex"), all=TRUE)
+names(final)[3:4] <- c("Count2015", "Count2016")
+final <- final[complete.cases(final),]
+```
+
+# 3
+
+## a.
+
+```{r dataSummaryA}
+totalColumn <- final$Count2015 + final$Count2016
+final[,"Total"] <- totalColumn
+```
+
+## b.
+
+```{r dataSummaryB}
+final <- final[with(final, order(-Total)), ]
+head(final, 10)
+```
+
+## c.
+
+```{r dataSummaryC}
+girlsNames <- final[grep("F",final$Sex, ignore.case=TRUE),]
+head(girlsNames, 10)
+```
+
+## d.
+
+```{r dataSummaryD}
+top10GirlsNames <- girlsNames[1:10,c("Name", "Count2015", "Count2016", "Total")]
+write.csv(top10GirlsNames, file = "top10GirlsNames.csv", row.names = FALSE)
+```

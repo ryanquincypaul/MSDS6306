@@ -7,6 +7,8 @@ I will store my homework for MSDS6306 Doing Data Science here.
 1. What is Data Science? Reproducibility in Research
 2. Introduction to R
 3. Tools for Data Science
+4. Gathering Data for Analysis
+5. Data Wrangling
 
 ## Source Material
 Not sure what goes here
