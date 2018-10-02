@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+Github: [Here](https://github.com/ryanquincypaul/MSDS6306/blob/master/unit_5/rpaul_livesession4assignment.Rmd)
+
 # 1
 
 ## a.
@@ -93,6 +95,6 @@ head(girlsNames, 10)
 ## d.
 
 ```{r dataSummaryD}
-top10GirlsNames <- girlsNames[1:10,c("Name", "Count2015", "Count2016", "Total")]
+top10GirlsNames <- girlsNames[1:10,c("Name", "Total")]
 write.csv(top10GirlsNames, file = "top10GirlsNames.csv", row.names = FALSE)
 ```
